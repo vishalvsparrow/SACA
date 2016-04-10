@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    {% if not title %}
+        <title>Welcome to SACA</title>
+    {% else %}
+        <title>{{ title }} - SACA</title>
+    {% endif %}
+
+</head>
+<body>
+    <div>SACA: <a href="index">Home</a> </div>
+<hr>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        <li>
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </li>
+        {% endif %}
+    </ul>
+    {% endwith %}
+{% block content_expanded %}
+{% endblock %}
+</body>
+</html>

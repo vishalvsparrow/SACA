@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content_expanded %}
+{% if analyze_user %}
+<h1>Welcome {{ analyze_user.title() }}!</h1>
+{% endif %}
+{% endblock %}

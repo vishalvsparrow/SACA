@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="2385302710">
+    <data-source source="LOCAL" name="Sqlite (Xerial) - SACA_DATABASE.db" uuid="73f7bb49-7e58-4e5a-b8be-507656d99651">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/SACA_DATABASE.db</jdbc-url>
+    </data-source>
+  </component>
+</project>
