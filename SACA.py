@@ -70,8 +70,6 @@ class Personality(db.Model):
     feeling = db.Column(db.String(50),unique=False)
     judging = db.Column(db.String(50),unique=False)
     perceiving = db.Column(db.String(50),unique=False)
-    
-
 
 db.create_all()
 '''

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="dataSourceStorage">
-  <data-source name="Sqlite (Xerial) - SACA_DATABASE.db" uuid="48de397d-c6c0-4f13-a7fd-9462b0406e65">
+  <data-source name="Sqlite (Xerial) - SACA_DATABASE.db" uuid="94dce27a-8856-4ef9-b300-d109a3b6d398">
     <database-info product="SQLite" version="3.8.9" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native"/>
     <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
     <schema name="" catalog=""/>
@@ -19,9 +19,9 @@
       <primary-key columns="id),foreign key(id"/>
       <foreign-key name="#FAKE_Basic Information_1" columns="id" ref-table="user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
       <index name="ix_Basic Information_fav_subjects" unique="true" columns="fav_subjects"/>
+      <index name="ix_Basic Information_department" unique="true" columns="department"/>
       <index name="ix_Basic Information_transport" unique="true" columns="transport"/>
       <index name="ix_Basic Information_backlogs" unique="true" columns="backlogs"/>
-      <index name="ix_Basic Information_department" unique="true" columns="department"/>
       <index name="ix_Basic Information_CPI" unique="true" columns="CPI"/>
       <index name="ix_Basic Information_age" unique="true" columns="age"/>
       <index name="ix_Basic Information_first_name" unique="true" columns="first_name"/>
