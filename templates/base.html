@@ -11,7 +11,7 @@
 
 </head>
 <body>
-    <div>SACA: <a href="index">Home</a> </div>
+    <div>SACA: <a href="{{ url_for('index') }}">Home</a> </div>
 <hr>
     {% with messages = get_flashed_messages() %}
     {% if messages %}

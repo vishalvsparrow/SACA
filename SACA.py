@@ -1,8 +1,10 @@
-from flask import Flask
-from flask import render_template, flash, redirect, request, session
+from flask import Flask, jsonify
+from flask import flash, redirect, request, session
 from forms import LoginForm
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restless import APIManager
+from flask import render_template, abort
+from jinja2 import TemplateNotFound
 
 # from models import db
 
@@ -52,6 +54,25 @@ class BasicInfo(db.Model):
     fav_subjects = db.Column(db.String(128), index=True, unique=False)
 
 
+class Personality(db.Model):
+    __tablename__ = 'Personality Information'
+    id = db.Column(db.INTEGER,db.ForeignKey(User.id),primary_key =True)
+    username = db.Column(db.String(64),db.ForeignKey(User.username),unique=True)
+    personality_type = db.Column(db.String(5))
+    personality_preference = db.Column(db.String(40))
+
+    introvert = db.Column(db.String(50),unique=False)
+    extrovert = db.Column(db.String(50),unique=False)
+    sensing = db.Column(db.String(50),unique=False)
+    intuition = db.Column(db.String(50),unique=False)
+
+    thinking = db.Column(db.String(50),unique=False)
+    feeling = db.Column(db.String(50),unique=False)
+    judging = db.Column(db.String(50),unique=False)
+    perceiving = db.Column(db.String(50),unique=False)
+    
+
+
 db.create_all()
 '''
 u = User(username='test', email='test@test.com',password='testing123')
@@ -92,7 +113,7 @@ api_manager.create_api(User, methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if 'user' not in session:
-        return login()
+        return redirect('/login')
 
     elif session['user']:
         prof = Professor.query.filter_by(username=session['user']).first()
@@ -159,13 +180,14 @@ def login():
 
 # Empty for now
 @app.route('/analyze', methods=['GET'])
-@app.route('analyze/',methods=['GET'])
+@app.route('/analyze/', methods=['GET'])
 def analyze_general():
     if 'user' not in session:
         return redirect('/')
     elif 'user' in session:
         return render_template('analyze.html')
     return redirect('/')
+
 
 @app.route('/analyze/<analyze_user>')
 def analyze(analyze_user):
@@ -186,6 +208,7 @@ def logout():
         return redirect('/login')
     return redirect('/login')
 
+
 @app.route('/personality')
 @app.route('/personality/')
 def personality_general():
@@ -193,6 +216,52 @@ def personality_general():
         return redirect('/')
     elif 'user' in session:
         return render_template('personality_types.html')
+    return redirect('/login')
+
+
+@app.route('/personality/<personality>')
+@app.route('/personality/<personality>/')
+def personality(personality):
+    try:
+        if 'user' not in session:
+            return redirect('/login')
+        elif 'user' in session:
+
+            final = '/personality_pages/'
+            personality = personality.upper()
+            personality += '.html'
+            final += personality
+            return render_template('personality.html', personality=final)
+
+    except TemplateNotFound:
+        abort(404)
+
+    return redirect('/login')
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    if 'user' not in session:
+        return redirect('/login')
+    return render_template('404.html')
+
+
+@app.route('/post', methods=['POST', 'GET'])
+def post():
+    if request.method == 'POST':
+        # Get the parsed contents of the form data
+        json = request.json
+        print(json)
+        # Render template
+        print json.get("username")
+        print json.get("password")
+        print json.get("basic_info").get("Backlogs")
+        return "positive"
+    #      return jsonify(json)
+    elif request.method == 'GET':
+        return redirect('/404')
+
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    # app.run(debug=True, use_reloader=False)
+    app.run(host="0.0.0.0")
