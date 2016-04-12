@@ -93,6 +93,13 @@ u1 = User(username='bandOnTheRun',email='Wings@wing.com',password='sjoksd')
 db.session.add(b)
 db.session.commit()
 '''
+'''
+prof = Professor(username='admin',password='admin')
+db.session.add(prof)
+db.session.commit()
+'''
+
+
 
 users = User.query.all()
 basic = BasicInfo
@@ -115,10 +122,12 @@ def index():
 
     elif session['user']:
         prof = Professor.query.filter_by(username=session['user']).first()
-        print prof.username
         print "-----------0000---------------"
         if prof is None:
+            print 'going back!'
             return login()
+        else:
+            print prof.username
         message = 'Welcome back Professor ' + session['user'].title() + "!"
         return render_template('index.html', title='Home', users=users, basic=basic, message=message)
 
@@ -154,6 +163,7 @@ def login():
     form = LoginForm()
 
     if 'user' in session:
+        print session['user']
         return redirect('/')
 
     if form.validate_on_submit():
@@ -166,7 +176,8 @@ def login():
             session['user'] = form.username.data
             print 'THIS IS THE COOKIE-->'
             print session['user']
-            flash('Login Successful for user "%s" with password "%s"' % (form.username.data, str(form.password.data)))
+            flash('Login Successful for user "%s" "' % (form.username.data))
+            #flash('Login Successful for user "%s" with password "%s"' % (form.username.data, str(form.password.data)))
             return redirect('/index')
 
         else:
@@ -178,22 +189,20 @@ def login():
 
 # Empty for now
 @app.route('/analyze', methods=['GET'])
-@app.route('/analyze/', methods=['GET'])
-def analyze_general():
+def analyze():
     if 'user' not in session:
         return redirect('/')
     elif 'user' in session:
         return render_template('analyze.html')
     return redirect('/')
 
-
-@app.route('/analyze/<analyze_user>')
-def analyze(analyze_user):
+@app.route('/analysis/<analyze_user>')
+def analysis(analyze_user):
     if 'user' not in session:
         return redirect('/')
     elif 'user' in session:
-        return render_template('analyze.html', analyze_user=analyze_user)
-
+        #return render_template('analyze.html', analyze_user=analyze_user)
+        return 'hello again'
     return redirect('/')
 
 
@@ -253,7 +262,7 @@ def post():
         # Render template
         print json.get("username")
         print json.get("password")
-        print json.get("basic_info").get("Backlogs")
+        print json.get("basic_info").get("b acklogs")
         return "positive"
     #      return jsonify(json)
     elif request.method == 'GET':
@@ -261,5 +270,5 @@ def post():
 
 
 if __name__ == "__main__":
-    # app.run(debug=True, use_reloader=False)
+    app.run(debug=True, use_reloader=False)
     app.run(host="0.0.0.0")

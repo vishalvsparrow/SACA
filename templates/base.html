@@ -2,6 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+     <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename = 'css/materialize.min.css')}}" media="screen,projection">
+
+    <nav class="grey darken-2" role="navigation">
+
+        <img id="logo-container" src="{{ url_for('static',filename='enso.png') }}" class="brand-logo" height="60" width="60"/>
+      <ul class="left hide-on-med-and-down">
+        <li><a href="#"></a></li>
+          <li><a href="#"></a></li>
+          <li><a href="{{ url_for('index')}}">HOME</a></li>
+          <li><a href="{{ url_for('analyze')}}">ANALYZE</a></li>
+          <li><a href="#">LEARN MBTI</a></li>
+          <li><a href="#">FAMOUS MBTI TYPES</a></li>
+          <li><a href="#">ABOUT ME</a></li>
+      </ul>
+
+        <ul class="right hide-on-med-and-down">
+        <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+
+  </nav>
 
     {% if not title %}
         <title>Welcome to SACA</title>
@@ -10,9 +35,11 @@
     {% endif %}
 
 </head>
+<div class="container">
 <body>
-    <div>SACA: <a href="{{ url_for('index') }}">Home</a> </div>
-<hr>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="{{url_for('static',filename = 'js/materialize.min.js')}}" ></script>
+
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul>
@@ -26,5 +53,6 @@
     {% endwith %}
 {% block content_expanded %}
 {% endblock %}
+</div>
 </body>
 </html>
