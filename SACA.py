@@ -28,6 +28,7 @@ class User(db.Model):
     email = db.Column(db.String(64), index=True, unique=True)
     password = db.Column(db.String(64), index=True, unique=False)
     basic_info = db.relationship("BasicInfo", uselist=False, backref="user", single_parent=True)
+    personality_info = db.relationship("Personality", backref="personality", uselist =False, single_parent=True)
 
     def __repr__(self):
         return '<User %r>' % (self.username)
@@ -53,23 +54,24 @@ class BasicInfo(db.Model):
     transport = db.Column(db.String(20), index=True, unique=False)
     fav_subjects = db.Column(db.String(128), index=True, unique=False)
 
-
 class Personality(db.Model):
     __tablename__ = 'Personality Information'
-    id = db.Column(db.INTEGER,db.ForeignKey(User.id),primary_key =True)
-    username = db.Column(db.String(64),db.ForeignKey(User.username),unique=True)
+    id = db.Column(db.INTEGER, db.ForeignKey(User.id), primary_key=True)
+    #username = db.Column(db.String(64), db.ForeignKey(User.username), unique=True,nullable=False)
     personality_type = db.Column(db.String(5))
     personality_preference = db.Column(db.String(40))
 
-    introvert = db.Column(db.String(50),unique=False)
-    extrovert = db.Column(db.String(50),unique=False)
-    sensing = db.Column(db.String(50),unique=False)
-    intuition = db.Column(db.String(50),unique=False)
+    introvert = db.Column(db.String(50), unique=False)
+    extrovert = db.Column(db.String(50), unique=False)
+    sensing = db.Column(db.String(50), unique=False)
+    intuition = db.Column(db.String(50), unique=False)
 
-    thinking = db.Column(db.String(50),unique=False)
-    feeling = db.Column(db.String(50),unique=False)
-    judging = db.Column(db.String(50),unique=False)
-    perceiving = db.Column(db.String(50),unique=False)
+    thinking = db.Column(db.String(50), unique=False)
+    feeling = db.Column(db.String(50), unique=False)
+    judging = db.Column(db.String(50), unique=False)
+    perceiving = db.Column(db.String(50), unique=False)
+
+
 
 db.create_all()
 '''
@@ -98,8 +100,6 @@ prof = Professor(username='admin',password='admin')
 db.session.add(prof)
 db.session.commit()
 '''
-
-
 
 users = User.query.all()
 basic = BasicInfo
@@ -176,8 +176,8 @@ def login():
             session['user'] = form.username.data
             print 'THIS IS THE COOKIE-->'
             print session['user']
-            flash('Login Successful for user "%s" "' % (form.username.data))
-            #flash('Login Successful for user "%s" with password "%s"' % (form.username.data, str(form.password.data)))
+            flash('Login Successful for user "%s"' % (form.username.data))
+            # flash('Login Successful for user "%s" with password "%s"' % (form.username.data, str(form.password.data)))
             return redirect('/index')
 
         else:
@@ -193,16 +193,26 @@ def analyze():
     if 'user' not in session:
         return redirect('/')
     elif 'user' in session:
-        return render_template('analyze.html')
-    return redirect('/')
+        all_users = User.query.all()
+        all_personality = Personality.query.all()
+        '''
+        for user in all_users:
+            if user.basic_info is None:
+                user.basic_info = 'N/A'
+        '''
 
+        return render_template('analyze.html',all_users = all_users, all_personality = all_personality)
+    return redirect('/')
+'''
 @app.route('/analysis/<analyze_user>')
-def analysis(analyze_user):
+'''
+@app.route('/analysis/<user_name>')
+def analysis(user_name):
     if 'user' not in session:
         return redirect('/')
     elif 'user' in session:
-        #return render_template('analyze.html', analyze_user=analyze_user)
-        return 'hello again'
+        print 'hello to analysis'
+        return render_template('analysis.html', analysis_name=user_name)
     return redirect('/')
 
 
@@ -262,13 +272,18 @@ def post():
         # Render template
         print json.get("username")
         print json.get("password")
-        print json.get("basic_info").get("b acklogs")
+        print json.get("basic_info").get("backlogs")
         return "positive"
-    #      return jsonify(json)
+    # return jsonify(json)
     elif request.method == 'GET':
         return redirect('/404')
 
 
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    #app.run(debug=True, use_reloader=False)
     app.run(host="0.0.0.0")

@@ -1,16 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content_expanded %}
-<h1>Login:</h1>
+<br/>
+
+    <div class="container">
+<div class="section">
+<div class="image center">
+    <img src="{{ url_for('static',filename='enso.png')}}" height="200" width="200">
+    <div class="grey-text text-darken-2">
+
+            Student Analysis and Counseling App - Teacher's module
+
+    </div>
+</div>
+
 <form action="" method="post" name="login">
     {{ form.hidden_tag() }}
 <p>
     User name: <br/>
+<div class="input-field">
+
     {{ form.username }}<br/>
     {% for error in form.username.errors  %}
-    <span style="color:red">
+    <span class="red-text text-darken-2">
         [{{ error }}]
     </span>
+
+</div>
 
     {% endfor %}
 </p>
@@ -19,14 +35,18 @@
     {{ form.password }}
     {% for error in form.password.errors %}
         <br/>
-    <span style="color:rebeccapurple">
+    <span class="red-text text-darken-2">
         {{ error }}
     </span>
     {% endfor %}
 
 </p>
-    <p>
-        <input type="submit" value="Sign In">
-    </p>
+    <input class="btn waves-effect waves-light grey" type="submit" value="Sign In">
+
 </form>
+
+    </div>
+
+    </div>
+
 {% endblock %}

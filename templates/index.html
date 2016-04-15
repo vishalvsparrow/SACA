@@ -1,29 +1,68 @@
 {% extends "base.html" %}
 {% block content_expanded %}
     {% if message %}
-    <h2>{{ message }}</h2>
+    <h2 class="grey-text text-darken-2">{{ message }}</h2>
+
+        <h6 class="blue-grey-text text-darken-2">Check out what you can do today</h6>
     {% endif %}
-<h3>Posts:</h3>
-{% for post in post1 %}
-<div><p>{{ post.author.nickname }}</p></div>
-<div><p>{{ post.body.post_title }}</p></div>
-{% endfor %}
-<h3>Users:</h3>
-    {% for user in users %}
-    <div><p><b>ID: {{ user.id }}</b></p></div>
-    <div><p><b>USER NAME:</b> {{ user.username }}</p></div>
-    <div><p><b>E-mail: </b>{{ user.email }}</p></div>
-    <div><p><b>Password</b>: {{ user.password }}</p></div>
-        <div>
-        <b>Department:</b>
-        {{ basic.query.get(user.id).department }}
+
+
+    <div class="section">
+
+    <br/>
+
+      <div class="row">
+        <div class="col s12 m3 l3">
+            <a href="{{ url_for('analyze') }}">
+            <div class="card">
+          <div class="card-image">
+              <img src="{{ url_for('static',filename='scientist.jpg')}}">
+          <div class="card-content center grey-text">
+              <strong>Analyze your students</strong>
+          </div>
+          </div>
+            </div>
+            </a>
         </div>
-        <div>
-        <p>
-        <b>Fav subjects:</b>
-            {{basic.query.get(user.id).fav_subjects}}
-        </p>
+
+        <div class="col s12 m3 l3">
+            <div class="card">
+          <div class="card-image center">
+              <img src="{{ url_for('static',filename='learn.jpg')}}">
+          <div class="card-content center grey-text">
+              <strong>Learn MBTI</strong>
+          </div>
+          </div>
+            </div>
         </div>
-    {% endfor %}
+
+       <div class="col s12 m3 l3">
+            <div class="card">
+          <div class="card-image">
+              <img src="{{ url_for('static',filename='categories.jpg')}}">
+          <div class="card-content center grey-text">
+              <strong>The 16 personalities</strong>
+          </div>
+          </div>
+            </div>
+        </div>
+
+
+        <div class="col s12 m3 l3">
+            <a href="{{ url_for('analyze') }}">
+            <div class="card">
+          <div class="card-image">
+              <img src="{{ url_for('static',filename='spotlight.jpg')}}">
+          <div class="card-content center grey-text">
+              <strong>Famous MBTI types</strong>
+          </div>
+          </div>
+            </div>
+            </a>
+        </div>
+    </div>
+    <br><br>
+    </div>
+
 {% endblock %}
 

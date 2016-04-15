@@ -7,22 +7,31 @@
 
     <nav class="grey darken-2" role="navigation">
 
-        <img id="logo-container" src="{{ url_for('static',filename='enso.png') }}" class="brand-logo" height="60" width="60"/>
+        <img id="logo-container" src="{{ url_for('static',filename='enso.png') }}" class="brand-logo" height="55" width="55"
+        style="margin-top:0.25%;margin-left: 0.55%"/>
       <ul class="left hide-on-med-and-down">
-        <li><a href="#"></a></li>
+          {% if 'user' in session %}
+          <li><a href="#"></a></li>
           <li><a href="#"></a></li>
           <li><a href="{{ url_for('index')}}">HOME</a></li>
           <li><a href="{{ url_for('analyze')}}">ANALYZE</a></li>
           <li><a href="#">LEARN MBTI</a></li>
+          <li><a href="#">THE 16 PERSONALITIES</a></li>
           <li><a href="#">FAMOUS MBTI TYPES</a></li>
-          <li><a href="#">ABOUT ME</a></li>
+          <li><a href="{{ url_for('about')}}">ABOUT ME</a></li>
       </ul>
 
         <ul class="right hide-on-med-and-down">
         <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
         </ul>
+        {% elif 'user' not in session %}
+               <li><a href="#"></a></li>
+                <li><a href="#"></a></li>
+                  <li><a href="{{ url_for('login') }}">LOGIN</a></li>
+              <li><a href="{{ url_for('about') }}">ABOUT ME</a></li>
+        {% endif %}
       <ul id="nav-mobile" class="side-nav">
-        <li><a href="#">Navbar Link</a></li>
+        <li><a href="#"></a></li>
       </ul>
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 
@@ -35,11 +44,12 @@
     {% endif %}
 
 </head>
-<div class="container">
+
 <body>
+
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="{{url_for('static',filename = 'js/materialize.min.js')}}" ></script>
-
+<div class="container">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul>
@@ -54,5 +64,6 @@
 {% block content_expanded %}
 {% endblock %}
 </div>
+
 </body>
 </html>
