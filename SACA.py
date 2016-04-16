@@ -28,7 +28,7 @@ class User(db.Model):
     email = db.Column(db.String(64), index=True, unique=True)
     password = db.Column(db.String(64), index=True, unique=False)
     basic_info = db.relationship("BasicInfo", uselist=False, backref="user", single_parent=True)
-    personality_info = db.relationship("Personality", backref="personality", uselist =False, single_parent=True)
+    personality_info = db.relationship("Personality", backref="personality", uselist=False, single_parent=True)
 
     def __repr__(self):
         return '<User %r>' % (self.username)
@@ -54,10 +54,11 @@ class BasicInfo(db.Model):
     transport = db.Column(db.String(20), index=True, unique=False)
     fav_subjects = db.Column(db.String(128), index=True, unique=False)
 
+
 class Personality(db.Model):
     __tablename__ = 'Personality Information'
     id = db.Column(db.INTEGER, db.ForeignKey(User.id), primary_key=True)
-    #username = db.Column(db.String(64), db.ForeignKey(User.username), unique=True,nullable=False)
+    # username = db.Column(db.String(64), db.ForeignKey(User.username), unique=True,nullable=False)
     personality_type = db.Column(db.String(5))
     personality_preference = db.Column(db.String(40))
 
@@ -70,7 +71,6 @@ class Personality(db.Model):
     feeling = db.Column(db.String(50), unique=False)
     judging = db.Column(db.String(50), unique=False)
     perceiving = db.Column(db.String(50), unique=False)
-
 
 
 db.create_all()
@@ -201,11 +201,15 @@ def analyze():
                 user.basic_info = 'N/A'
         '''
 
-        return render_template('analyze.html',all_users = all_users, all_personality = all_personality)
+        return render_template('analyze.html', all_users=all_users, all_personality=all_personality)
     return redirect('/')
+
+
 '''
 @app.route('/analysis/<analyze_user>')
 '''
+
+
 @app.route('/analysis/<user_name>')
 def analysis(user_name):
     if 'user' not in session:
@@ -267,13 +271,134 @@ def page_not_found(e):
 def post():
     if request.method == 'POST':
         # Get the parsed contents of the form data
+        # print request.headers.get()
         json = request.json
         print(json)
         # Render template
-        print json.get("username")
-        print json.get("password")
-        print json.get("basic_info").get("backlogs")
-        return "positive"
+        post_username = json.get("username")
+        print post_username
+        post_email = json.get("email")
+        print post_email
+        post_password = json.get("password")
+        print post_password
+        purpose = json.get("purpose")
+
+        post_personality_type = json.get("personality_type")
+        post_personality_preference = json.get("personality_preference")
+        post_introvert = json.get("introvert")
+        post_extrovert = json.get("extrovert")
+        post_sensing = json.get("sensing")
+        post_intuition = json.get("intuition")
+        post_thinking = json.get("thinking")
+        post_feeling = json.get("feeling")
+        post_judging = json.get("judging")
+        post_perceiving = json.get("perceiving")
+
+        my_message = "default"
+        allow = False
+
+        post_users = User.query.all()
+        print post_users
+        print purpose
+
+        if purpose == 'signup':
+            post_fname = json.get("basic_info").get("fname")
+            post_lname = json.get("basic_info").get("lname")
+            post_enrollment = json.get("basic_info").get("enrollment")
+            post_dept = json.get("basic_info").get("dept")
+            post_age = json.get("basic_info").get("age")
+            post_cpi = json.get("basic_info").get("cpi")
+            post_backlogs = json.get("basic_info").get("backlogs")
+            post_transport = json.get("basic_info").get("transport")
+            post_fav_subjects = json.get("basic_info").get("fav_subjects")
+            post_gender = json.get("basic_info").get("gender")
+
+            print 'inside signup'
+            if post_users:
+                for one_user in post_users:
+                    print one_user
+                    if (post_username == one_user.username) or (post_email == one_user.email):
+                        allow = False
+                        my_message = "Account already exists!"
+                        print my_message
+                        break
+                    else:
+                        allow = True
+                        print "so good"
+
+            if allow or not post_users:
+                b1 = BasicInfo(first_name=post_fname, last_name=post_lname, enrollment=post_enrollment,
+                               department=post_dept, age=post_age, CPI=post_cpi, backlogs=post_backlogs,
+                               transport=post_transport, fav_subjects=post_fav_subjects, gender=post_gender)
+                u1 = User(username=post_username, email=post_email, password=post_password, basic_info=b1)
+                db.session.add(u1)
+
+                try:
+                    db.session.commit()
+                    my_message = "Account successfully created"
+                except Exception, err:
+                    print Exception, err
+                    my_message = "There was a problem"
+
+        if purpose == 'signin':
+            for one_user in post_users:
+                print one_user
+                if (post_username == one_user.username):
+                    correctUser = True
+                    if (post_password == one_user.password):
+                        correctPassword = True
+                        my_message = "Login successful"
+                        print my_message
+                        break
+                    elif(post_password != one_user.password):
+                        correctPassword = False
+                        my_message = "Please check your password"
+                else:
+                    allow = False
+                    my_message = "Login failed"
+                    print "not so good while singing in"
+
+
+                # correct this------------------------------------------
+        if purpose == 'personality':
+            for user in users:
+                print user
+                if (post_username == user.username) or (post_email == user.email):
+                    allow = False
+                    my_message = "Account already exists!"
+                    print my_message
+                    break
+                else:
+                    allow = True
+                    print "so good"
+
+            if allow:
+                u1 = User(username=post_username, email=post_email, password=post_password)
+                db.session.add(u1)
+                # db.session.add(b)
+                try:
+                    db.session.commit()
+                    my_message = "Account successfully created"
+                except Exception, err:
+                    print Exception, err
+                    my_message = "There was a problem"
+
+        if purpose == 'welcome':
+            for one_user in post_users:
+
+                if (post_username == one_user.username) or (post_email == one_user.email):
+                    allow = False
+                    my_message = "Account already exists"
+                    print my_message
+                    break
+                else:
+                    allow = True
+                    print "so good"
+            if allow:
+                my_message = "You may proceed"
+        print my_message
+        return my_message
+
     # return jsonify(json)
     elif request.method == 'GET':
         return redirect('/404')
@@ -285,5 +410,5 @@ def about():
 
 
 if __name__ == "__main__":
-    #app.run(debug=True, use_reloader=False)
-    app.run(host="0.0.0.0")
+    app.run(debug=True, use_reloader=False, host="0.0.0.0")
+    # app.run(host="0.0.0.0")
