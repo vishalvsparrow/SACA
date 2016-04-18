@@ -111,7 +111,7 @@ for user in users:
         print user.password
 
 api_manager = APIManager(app, flask_sqlalchemy_db=db)
-api_manager.create_api(User, methods=['GET', 'POST'])
+api_manager.create_api(User, methods=['GET', 'POST'],exclude_columns = ["password"])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -283,17 +283,6 @@ def post():
         print post_password
         purpose = json.get("purpose")
 
-        post_personality_type = json.get("personality_type")
-        post_personality_preference = json.get("personality_preference")
-        post_introvert = json.get("introvert")
-        post_extrovert = json.get("extrovert")
-        post_sensing = json.get("sensing")
-        post_intuition = json.get("intuition")
-        post_thinking = json.get("thinking")
-        post_feeling = json.get("feeling")
-        post_judging = json.get("judging")
-        post_perceiving = json.get("perceiving")
-
         my_message = "default"
         allow = False
 
@@ -343,45 +332,71 @@ def post():
         if purpose == 'signin':
             for one_user in post_users:
                 print one_user
-                if (post_username == one_user.username):
+                if (one_user.username == post_username):
                     correctUser = True
-                    if (post_password == one_user.password):
+                    if (one_user.password == post_password):
                         correctPassword = True
                         my_message = "Login successful"
                         print my_message
                         break
-                    elif(post_password != one_user.password):
+                    elif(one_user.password != post_password):
                         correctPassword = False
                         my_message = "Please check your password"
+                        break
                 else:
                     allow = False
-                    my_message = "Login failed"
+                    my_message = "User does not exist!"
                     print "not so good while singing in"
 
 
                 # correct this------------------------------------------
         if purpose == 'personality':
-            for user in users:
-                print user
-                if (post_username == user.username) or (post_email == user.email):
-                    allow = False
-                    my_message = "Account already exists!"
-                    print my_message
-                    break
-                else:
-                    allow = True
-                    print "so good"
 
-            if allow:
-                u1 = User(username=post_username, email=post_email, password=post_password)
-                db.session.add(u1)
-                # db.session.add(b)
-                try:
-                    db.session.commit()
-                    my_message = "Account successfully created"
-                except Exception, err:
-                    print Exception, err
-                    my_message = "There was a problem"
+            #Not going to nest here
+
+            post_personality_type = json.get("personality_type")
+            post_personality_preference = json.get("personality_preference")
+            post_introvert = json.get("introvert")
+            post_extrovert = json.get("extrovert")
+            post_sensing = json.get("sensing")
+            post_intuition = json.get("intuition")
+            post_thinking = json.get("thinking")
+            post_feeling = json.get("feeling")
+            post_judging = json.get("judging")
+            post_perceiving = json.get("perceiving")
+
+            my_user = User.query.filter_by(username = post_username).first()
+            print "MyUserIsHere"
+            print post_introvert
+            if my_user.personality_info is None:
+                b = Personality(id = my_user.id,personality_type = post_personality_type,
+                                personality_preference=post_personality_preference,
+                                introvert = post_introvert,extrovert = post_extrovert,
+                                sensing = post_sensing, intuition = post_intuition,
+                                thinking = post_thinking, feeling = post_feeling,
+                                judging = post_judging, perceiving = post_perceiving)
+                db.session.add(b)
+                db.session.commit()
+                my_message = "inserted"
+            else:
+                my_user.personality_info.personality_type = post_personality_type
+                my_user.personality_info.personality_preference = post_personality_preference
+
+                my_user.personality_info.introvert = post_introvert
+                my_user.personality_info.extrovert = post_extrovert
+
+                my_user.personality_info.sensing = post_sensing
+                my_user.personality_info.intuition = post_intuition
+
+                my_user.personality_info.thinking= post_thinking
+                my_user.personality_info.feeling = post_feeling
+
+                my_user.personality_info.judging = post_judging
+                my_user.personality_info.perceiving= post_perceiving
+
+                db.session.commit()
+                my_message = "inserted"
+            #db.session.add(my_user.personality_info.personality_type)
 
         if purpose == 'welcome':
             for one_user in post_users:

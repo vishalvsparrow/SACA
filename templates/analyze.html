@@ -30,14 +30,23 @@
                   <td>{{ user.basic_info.department }}</td>
                   <td>{{ user.basic_info.age }}</td>
                   <td>
+                      {% if not user.personality_info is none %}
                         {{user.personality_info.personality_type  }}
                         {{user.personality_info.personality_preference  }}
-
+                          {%else%}
+                          Test not taken
+                          {% endif %}
                   </td>
                   <td>
+                      {% if not user.personality_info is none %}
                       <a href="{{ url_for('analysis',user_name = user.username)}}">
                       <div class="btn indigo lighten-1">Analyze</div>
                       </a>
+                      {% else %}
+                          <a href="mailto:{{ user.email }}?subject=Reminder%20for%20personality%20test">
+                      <div class="btn indigo lighten-1">Reminde</div></a>
+                      {% endif %}
+
                   </td>
 	          </tr>
                 {% endif %}
